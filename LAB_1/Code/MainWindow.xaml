@@ -1,0 +1,104 @@
+﻿<Window x:Class="PCG_Lab1_var10.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PCG_Lab1_var10"
+        mc:Ignorable="d"
+        Title="Цветовые модели (Вариант 10)" Height="650" Width="950" WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Height="50" Margin="5" CornerRadius="4" BorderBrush="Gray" BorderThickness="1">
+            <Border x:Name="ColorPreview" Background="Black" CornerRadius="3"/>
+        </Border>
+
+        <GroupBox Header="CMYK" Grid.Row="1" Grid.Column="0" Margin="5">
+            <StackPanel x:Name="CmykContainer" Margin="5">
+                <Border BorderBrush="Black" BorderThickness="1" Height="200" Width="200" HorizontalAlignment="Center" Margin="0,0,0,15">
+                    <Image x:Name="CmykPalette" Width="200" Height="200" Cursor="Cross" MouseDown="Pad_MouseDown" MouseMove="Pad_MouseMove"/>
+                </Border>
+
+                <StackPanel Margin="0,0,0,15">
+                    <TextBlock Text="Ползунки осей (C / M / Y / K):" FontWeight="Bold" Margin="0,0,0,5" Foreground="Gray"/>
+                    <Slider x:Name="slC" Minimum="0" Maximum="100" Margin="0,3" ToolTip="Cyan" ValueChanged="Slider_ValueChanged"/>
+                    <Slider x:Name="slM" Minimum="0" Maximum="100" Margin="0,3" ToolTip="Magenta" ValueChanged="Slider_ValueChanged"/>
+                    <Slider x:Name="slY" Minimum="0" Maximum="100" Margin="0,3" ToolTip="Yellow" ValueChanged="Slider_ValueChanged"/>
+                    <Slider x:Name="slK" Minimum="0" Maximum="100" Margin="0,3" ToolTip="Black" ValueChanged="Slider_ValueChanged"/>
+                </StackPanel>
+
+                <StackPanel>
+                    <TextBlock Text="Ввод значений (C | M | Y | K):" FontWeight="Bold" Margin="0,0,0,5" Foreground="Gray"/>
+                    <UniformGrid Columns="4">
+                        <TextBox x:Name="txtC" Margin="2" TextAlignment="Center" TextChanged="TextBox_TextChanged"/>
+                        <TextBox x:Name="txtM" Margin="2" TextAlignment="Center" TextChanged="TextBox_TextChanged"/>
+                        <TextBox x:Name="txtY" Margin="2" TextAlignment="Center" TextChanged="TextBox_TextChanged"/>
+                        <TextBox x:Name="txtK" Margin="2" TextAlignment="Center" TextChanged="TextBox_TextChanged"/>
+                    </UniformGrid>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Header="LAB" Grid.Row="1" Grid.Column="1" Margin="5">
+            <StackPanel x:Name="LabContainer" Margin="5">
+                <Border BorderBrush="Black" BorderThickness="1" Height="200" Width="200" HorizontalAlignment="Center" Margin="0,0,0,15">
+                    <Image x:Name="LabPalette" Width="200" Height="200" Cursor="Cross" MouseDown="Pad_MouseDown" MouseMove="Pad_MouseMove"/>
+                </Border>
+
+                <StackPanel Margin="0,0,0,15">
+                    <TextBlock Text="Ползунки осей (L / a / b):" FontWeight="Bold" Margin="0,0,0,5" Foreground="Gray"/>
+                    <Slider x:Name="slL" Minimum="0" Maximum="100" Value="50" Margin="0,3" ToolTip="Lightness" ValueChanged="Slider_ValueChanged"/>
+                    <Slider x:Name="slA" Minimum="-128" Maximum="127" Margin="0,3" ToolTip="a (Green-Red)" ValueChanged="Slider_ValueChanged"/>
+                    <Slider x:Name="slB" Minimum="-128" Maximum="127" Margin="0,3" ToolTip="b (Blue-Yellow)" ValueChanged="Slider_ValueChanged"/>
+                </StackPanel>
+
+                <StackPanel>
+                    <TextBlock Text="Ввод значений (L | a | b):" FontWeight="Bold" Margin="0,0,0,5" Foreground="Gray"/>
+                    <UniformGrid Columns="3">
+                        <TextBox x:Name="txtL" Margin="2" TextAlignment="Center" TextChanged="TextBox_TextChanged"/>
+                        <TextBox x:Name="txtA" Margin="2" TextAlignment="Center" TextChanged="TextBox_TextChanged"/>
+                        <TextBox x:Name="txtB" Margin="2" TextAlignment="Center" TextChanged="TextBox_TextChanged"/>
+                    </UniformGrid>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Header="RGB" Grid.Row="1" Grid.Column="2" Margin="5">
+            <StackPanel x:Name="RgbContainer" Margin="5">
+                <Border BorderBrush="Black" BorderThickness="1" Height="200" Width="200" HorizontalAlignment="Center" Margin="0,0,0,15">
+                    <Image x:Name="RgbPalette" Width="200" Height="200" Cursor="Cross" MouseDown="Pad_MouseDown" MouseMove="Pad_MouseMove"/>
+                </Border>
+
+                <StackPanel Margin="0,0,0,15">
+                    <TextBlock Text="Ползунки осей (R / G / B):" FontWeight="Bold" Margin="0,0,0,5" Foreground="Gray"/>
+                    <Slider x:Name="slR" Minimum="0" Maximum="255" Margin="0,3" ToolTip="Red" ValueChanged="Slider_ValueChanged"/>
+                    <Slider x:Name="slG" Minimum="0" Maximum="255" Margin="0,3" ToolTip="Green" ValueChanged="Slider_ValueChanged"/>
+                    <Slider x:Name="slB_Rgb" Minimum="0" Maximum="255" Margin="0,3" ToolTip="Blue" ValueChanged="Slider_ValueChanged"/>
+                </StackPanel>
+
+                <StackPanel>
+                    <TextBlock Text="Ввод значений (R | G | B):" FontWeight="Bold" Margin="0,0,0,5" Foreground="Gray"/>
+                    <UniformGrid Columns="3">
+                        <TextBox x:Name="txtR" Margin="2" TextAlignment="Center" TextChanged="TextBox_TextChanged"/>
+                        <TextBox x:Name="txtG" Margin="2" TextAlignment="Center" TextChanged="TextBox_TextChanged"/>
+                        <TextBox x:Name="txtB_Rgb" Margin="2" TextAlignment="Center" TextChanged="TextBox_TextChanged"/>
+                    </UniformGrid>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+
+        <Border x:Name="WarningPanel" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Height="40" Background="#FFFDF0CD" Margin="5" CornerRadius="4" Visibility="Collapsed">
+            <TextBlock Text="!!! Внимание: Цвет вышел за границы охвата и был программно скорректирован!!!" Foreground="#856404" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Border>
+    </Grid>
+</Window>
