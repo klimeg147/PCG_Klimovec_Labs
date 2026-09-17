@@ -35,13 +35,15 @@ namespace PCG_Lab1_var10
         private static (double L, double A, double B) RgbToLab(double r, double g, double b)
         {
             double rL = r / 255.0; double gL = g / 255.0; double bL = b / 255.0;
-            rL = rL > 0.04045 ? Math.Pow((rL + 0.055) / 1.055, 2.4) : rL / 12.92;
-            gL = gL > 0.04045 ? Math.Pow((gL + 0.055) / 1.055, 2.4) : gL / 12.92;
-            bL = bL > 0.04045 ? Math.Pow((bL + 0.055) / 1.055, 2.4) : bL / 12.92;
+            double rn = rL > 0.04045 ? Math.Pow((rL + 0.055) / 1.055, 2.4) : rL / 12.92;
+            double gn = gL > 0.04045 ? Math.Pow((gL + 0.055) / 1.055, 2.4) : gL / 12.92;
+            double bn = bL > 0.04045 ? Math.Pow((bL + 0.055) / 1.055, 2.4) : bL / 12.92;
 
-            double x = (rL * 0.4124 + gL * 0.3576 + bL * 0.1805) * 100;
-            double y = (rL * 0.2126 + gL * 0.7152 + bL * 0.0722) * 100;
-            double z = (rL * 0.0193 + gL * 0.1192 + bL * 0.9505) * 100;
+            rn *= 100.0; gn *= 100.0; bn *= 100.0;
+
+            double x = rn * 0.412453 + gn * 0.357580 + bn * 0.180423;
+            double y = rn * 0.212671 + gn * 0.715160 + bn * 0.072169;
+            double z = rn * 0.019334 + gn * 0.119193 + bn * 0.950227;
 
             double fx = x / 95.047; double fy = y / 100.00; double fz = z / 108.883;
             fx = fx > 0.008856 ? Math.Pow(fx, 1.0 / 3.0) : (7.787 * fx) + (16.0 / 116.0);
@@ -61,17 +63,19 @@ namespace PCG_Lab1_var10
             double yr = Math.Pow(fy, 3) > 0.008856 ? Math.Pow(fy, 3) : (fy - 16.0 / 116.0) / 7.787;
             double zr = Math.Pow(fz, 3) > 0.008856 ? Math.Pow(fz, 3) : (fz - 16.0 / 116.0) / 7.787;
 
-            double x = xr * 95.047 / 100.0; double y = yr * 100.00 / 100.0; double z = zr * 108.883 / 100.0;
+            double x = xr * 95.047; double y = yr * 100.00; double z = zr * 108.883;
 
-            double rL = x * 3.2406 + y * -1.5372 + z * -0.4986;
-            double gL = x * -0.9689 + y * 1.8758 + z * 0.0415;
-            double bL = x * 0.0557 + y * -0.2040 + z * 1.0570;
+            double xf = x / 100.0; double yf = y / 100.0; double zf = z / 100.0;
+            double rn = xf * 3.2406 + yf * -1.5372 + zf * -0.4986;
+            double gn = xf * -0.9689 + yf * 1.8758 + zf * 0.0415;
+            double bn = xf * 0.0557 + yf * -0.2040 + zf * 1.0570;
 
-            rL = rL > 0.0031308 ? 1.055 * Math.Pow(rL, 1.0 / 2.4) - 0.055 : 12.92 * rL;
-            gL = gL > 0.0031308 ? 1.055 * Math.Pow(gL, 1.0 / 2.4) - 0.055 : 12.92 * gL;
-            bL = bL > 0.0031308 ? 1.055 * Math.Pow(bL, 1.0 / 2.4) - 0.055 : 12.92 * bL;
+            bool gamutViolation = (rn < 0 || rn > 1 || gn < 0 || gn > 1 || bn < 0 || bn > 1);
 
-            bool gamutViolation = (rL < 0 || rL > 1 || gL < 0 || gL > 1 || bL < 0 || bL > 1);
+            double rL = rn > 0.0031308 ? 1.055 * Math.Pow(rn, 1.0 / 2.4) - 0.055 : 12.92 * rn;
+            double gL = gn > 0.0031308 ? 1.055 * Math.Pow(gn, 1.0 / 2.4) - 0.055 : 12.92 * gn;
+            double bL = bn > 0.0031308 ? 1.055 * Math.Pow(bn, 1.0 / 2.4) - 0.055 : 12.92 * bn;
+
             return (Math.Clamp(rL * 255, 0, 255), Math.Clamp(gL * 255, 0, 255), Math.Clamp(bL * 255, 0, 255), gamutViolation);
         }
 
