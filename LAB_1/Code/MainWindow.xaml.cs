@@ -76,28 +76,60 @@ namespace PCG_Lab1_var10
         }
 
         #endregion
-        #region Синхронизация контролов (Слушатели событий)
+        #region Синхронизация контролов
 
-        private void UpdateAllFromRgb(double r, double g, double b, bool gamutWarning = false)
+        private void UpdateAllFromRgb(double r, double g, double b, bool gamutWarning = false, string sourceModel = "")
         {
             if (slR == null || slG == null || slB_Rgb == null ||
                 slC == null || slM == null || slY == null || slK == null ||
                 slL == null || slA == null || slB == null) return;
 
             _isUpdating = true;
+            r = Math.Clamp(r, 0, 255);
+            g = Math.Clamp(g, 0, 255);
+            b = Math.Clamp(b, 0, 255);
 
             ColorPreview.Background = new SolidColorBrush(Color.FromRgb((byte)r, (byte)g, (byte)b));
             WarningPanel.Visibility = gamutWarning ? Visibility.Visible : Visibility.Collapsed;
 
-            slR.Value = r; slG.Value = g; slB_Rgb.Value = b;
-            var cmyk = RgbToCmyk(r, g, b);
-            slC.Value = cmyk.C; slM.Value = cmyk.M; slY.Value = cmyk.Y; slK.Value = cmyk.K;
-            var lab = RgbToLab(r, g, b);
-            slL.Value = lab.L; slA.Value = lab.A; slB.Value = lab.B;
+            if (sourceModel != "RGB")
+            {
+                slR.Value = r; slG.Value = g; slB_Rgb.Value = b;
+                txtR.Text = Math.Round(r).ToString();
+                txtG.Text = Math.Round(g).ToString();
+                txtB_Rgb.Text = Math.Round(b).ToString();
+            }
 
-            txtR.Text = Math.Round(r).ToString(); txtG.Text = Math.Round(g).ToString(); txtB_Rgb.Text = Math.Round(b).ToString();
-            txtC.Text = Math.Round(cmyk.C).ToString(); txtM.Text = Math.Round(cmyk.M).ToString(); txtY.Text = Math.Round(cmyk.Y).ToString(); txtK.Text = Math.Round(cmyk.K).ToString();
-            txtL.Text = Math.Round(lab.L).ToString(); txtA.Text = Math.Round(lab.A).ToString(); txtB.Text = Math.Round(lab.B).ToString();
+            var cmyk = RgbToCmyk(r, g, b);
+            if (sourceModel != "CMYK")
+            {
+                slC.Value = cmyk.C; slM.Value = cmyk.M; slY.Value = cmyk.Y; slK.Value = cmyk.K;
+                txtC.Text = Math.Round(cmyk.C).ToString();
+                txtM.Text = Math.Round(cmyk.M).ToString();
+                txtY.Text = Math.Round(cmyk.Y).ToString();
+                txtK.Text = Math.Round(cmyk.K).ToString();
+            }
+            else
+            {
+                txtC.Text = Math.Round(slC.Value).ToString();
+                txtM.Text = Math.Round(slM.Value).ToString();
+                txtY.Text = Math.Round(slY.Value).ToString();
+                txtK.Text = Math.Round(slK.Value).ToString();
+            }
+            var lab = RgbToLab(r, g, b);
+            if (sourceModel != "LAB")
+            {
+                slL.Value = lab.L; slA.Value = lab.A; slB.Value = lab.B;
+                txtL.Text = Math.Round(lab.L).ToString();
+                txtA.Text = Math.Round(lab.A).ToString();
+                txtB.Text = Math.Round(lab.B).ToString();
+            }
+            else
+            {
+                txtL.Text = Math.Round(slL.Value).ToString();
+                txtA.Text = Math.Round(slA.Value).ToString();
+                txtB.Text = Math.Round(slB.Value).ToString();
+            }
 
             _isUpdating = false;
 
@@ -112,16 +144,18 @@ namespace PCG_Lab1_var10
                 slL == null || slA == null || slB == null) return;
 
             if (sender == slR || sender == slG || sender == slB_Rgb)
-                UpdateAllFromRgb(slR.Value, slG.Value, slB_Rgb.Value);
+            {
+                UpdateAllFromRgb(slR.Value, slG.Value, slB_Rgb.Value, false, "RGB");
+            }
             else if (sender == slC || sender == slM || sender == slY || sender == slK)
             {
                 var rgb = CmykToRgb(slC.Value, slM.Value, slY.Value, slK.Value);
-                UpdateAllFromRgb(rgb.R, rgb.G, rgb.B);
+                UpdateAllFromRgb(rgb.R, rgb.G, rgb.B, false, "CMYK");
             }
             else if (sender == slL || sender == slA || sender == slB)
             {
                 var res = LabToRgb(slL.Value, slA.Value, slB.Value);
-                UpdateAllFromRgb(res.R, res.G, res.B, res.outOfGamut);
+                UpdateAllFromRgb(res.R, res.G, res.B, res.outOfGamut, "LAB");
             }
         }
 
@@ -135,22 +169,21 @@ namespace PCG_Lab1_var10
             if (sender is TextBox tb && double.TryParse(tb.Text, out double _))
             {
                 if ((tb == txtR || tb == txtG || tb == txtB_Rgb) && double.TryParse(txtR.Text, out double r) && double.TryParse(txtG.Text, out double g) && double.TryParse(txtB_Rgb.Text, out double b))
-                    UpdateAllFromRgb(r, g, b);
+                    UpdateAllFromRgb(r, g, b, false, "RGB");
                 else if ((tb == txtC || tb == txtM || tb == txtY || tb == txtK) && double.TryParse(txtC.Text, out double c) && double.TryParse(txtM.Text, out double m) && double.TryParse(txtY.Text, out double y) && double.TryParse(txtK.Text, out double k))
                 {
                     var rgb = CmykToRgb(c, m, y, k);
-                    UpdateAllFromRgb(rgb.R, rgb.G, rgb.B);
+                    UpdateAllFromRgb(rgb.R, rgb.G, rgb.B, false, "CMYK");
                 }
                 else if ((tb == txtL || tb == txtA || tb == txtB) && double.TryParse(txtL.Text, out double l) && double.TryParse(txtA.Text, out double a) && double.TryParse(txtB.Text, out double bLab))
                 {
                     var res = LabToRgb(l, a, bLab);
-                    UpdateAllFromRgb(res.R, res.G, res.B, res.outOfGamut);
+                    UpdateAllFromRgb(res.R, res.G, res.B, res.outOfGamut, "LAB");
                 }
             }
         }
 
         #endregion
-
         #region Отрисовка динамических палитр
 
         private void RenderDynamicPalettes()
