@@ -1,0 +1,46 @@
+﻿<Window x:Class="LAB2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LAB2"
+        mc:Ignorable="d"
+        Title="Анализ Графических Файлов" Height="720" Width="1280" MinWidth="1280" MinHeight="720">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
+            <Button x:Name="BtnSelectFolder" Content="Выбрать папку..." Padding="10,5" Click="BtnSelectFolder_Click"/>
+            <TextBlock x:Name="TxtFolderPath" Text="Папка не выбрана" VerticalAlignment="Center" Margin="15,0,0,0" Foreground="Gray" FontStyle="Italic"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1" Margin="0,0,0,10">
+            <ProgressBar x:Name="LoadingProgressBar" Height="20" Minimum="0" Maximum="100" Value="0"/>
+            <TextBlock x:Name="TxtProgressStatus" Text="Готово" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+        </Grid>
+
+        <DataGrid x:Name="GridImageResults" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True"
+                  VirtualizingStackPanel.IsVirtualizing="True"
+                  VirtualizingStackPanel.VirtualizationMode="Recycling"
+                  ScrollViewer.IsDeferredScrollingEnabled="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Имя файла" Binding="{Binding FileName}" Width="2*"/>
+                <DataGridTextColumn Header="Размер (px)" Binding="{Binding Dimensions}" Width="1*"/>
+                <DataGridTextColumn Header="Разрешение (DPI)" Binding="{Binding Resolution}" Width="1*"/>
+                <DataGridTextColumn Header="Глубина цвета" Binding="{Binding ColorDepth}" Width="1*"/>
+                <DataGridTextColumn Header="Сжатие" Binding="{Binding Compression}" Width="1.5*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StatusBar Grid.Row="3" Margin="0,10,0,0">
+            <StatusBarItem>
+                <TextBlock x:Name="TxtTotalFiles" Text="Всего файлов обработано: 0"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>
