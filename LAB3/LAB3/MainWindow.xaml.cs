@@ -66,20 +66,27 @@ namespace LAB3
                 {
                     switch (selectedMethod)
                     {
-                        case 0: // Медианный фильтр
-                            int radius = 1;
-                            ImageProcessor.ApplyMedianFilter(sourceFast, destFast, radius, edgeMode);
-                            break;
+                        case 0:
+                            {
+                                if (!int.TryParse(TxtRadius.Text, out int radius) || radius <= 0)
+                                {
+                                    MessageBox.Show("Dведите положительный целый радиус!", "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                    return;
+                                }
 
-                        case 1: // Глобальная пороговая обработка (Оцу)
+                                ImageProcessor.ApplyMedianFilter(sourceFast, destFast, radius, edgeMode);
+                                break;
+                            }
+
+                        case 1:
                             ImageProcessor.ApplyOtsuThreshold(sourceFast, destFast);
                             break;
 
-                        case 2: // Глобальный метод по среднему
+                        case 2:
                             ImageProcessor.ApplyGlobalMeanThreshold(sourceFast, destFast);
                             break;
 
-                        case 3: // Адаптивная пороговая обработка
+                        case 3:
                             ImageProcessor.ApplyAdaptiveThreshold(sourceFast, destFast, radius: 10, constantOffset: 10);
                             break;
                     }

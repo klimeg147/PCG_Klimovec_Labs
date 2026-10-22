@@ -11,12 +11,13 @@ namespace LAB3
             int width = source.Width;
             int height = source.Height;
             int windowSize = (2 * radius + 1) * (2 * radius + 1);
-            int[] rArray = new int[windowSize];
-            int[] gArray = new int[windowSize];
-            int[] bArray = new int[windowSize];
 
-            for (int y = 0; y < height; y++)
+            System.Threading.Tasks.Parallel.For(0, height, y =>
             {
+                int[] rArray = new int[windowSize];
+                int[] gArray = new int[windowSize];
+                int[] bArray = new int[windowSize];
+
                 for (int x = 0; x < width; x++)
                 {
                     int index = 0;
@@ -35,20 +36,15 @@ namespace LAB3
                         }
                     }
 
-                    // Сортировка по суммарной яркости (r + g + b) для сохранения натуральных цветов
-                    Array.Sort(rArray, gArray, 0, windowSize);
-                    Array.Sort(gArray, bArray, 0, windowSize); // Стабильная сортировка триплета
+                    Array.Sort(rArray, 0, windowSize);
+                    Array.Sort(gArray, 0, windowSize);
+                    Array.Sort(bArray, 0, windowSize);
 
                     int medianIndex = windowSize / 2;
-                    SortTriplets(rArray, gArray, bArray, windowSize);
-
-                    byte medianR = (byte)rArray[medianIndex];
-                    byte medianG = (byte)gArray[medianIndex];
-                    byte medianB = (byte)bArray[medianIndex];
-
-                    destination.SetPixel(x, y, medianR, medianG, medianB);
+                    
+                    destination.SetPixel(x, y, (byte)rArray[medianIndex], (byte)gArray[medianIndex], (byte)bArray[medianIndex]);
                 }
-            }
+            });
         }
 
         private static void SortTriplets(int[] r, int[] g, int[] b, int length)
